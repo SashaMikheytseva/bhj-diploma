@@ -59,11 +59,13 @@ class TransactionsPage {
     }
 
     if (confirm('Do you really want to remove the account?')) {
-      Account.remove({ id: this.lastOptions.account_id }, (response) => {
+      Account.remove({ id: this.lastOptions.account_id }, (err, response) => {
         if (response && response.success) {
           this.clear();
           App.updateWidgets();
           App.updateForms();
+        } else {
+          console.log(err);
         }
       });
     }
@@ -77,9 +79,11 @@ class TransactionsPage {
    * */
   removeTransaction(id) {
     if (confirm('Do you really want to remove this transaction?')) {
-      Transaction.remove({ id }, (response) => {
+      Transaction.remove({ id }, (err, response) => {
         if (response && response.success) {
           App.update();
+        } else {
+          console.log(err);
         }
       });
     }
@@ -98,15 +102,19 @@ class TransactionsPage {
       return;
     }
 
-    Account.get(options.account_id, (response) => {
+    Account.get(options.account_id, (err, response) => {
       if (response && response.success) {
         this.renderTitle(response.data.name);
+      } else {
+        console.log(err);
       }
     });
 
-    Transaction.list(options, (response) => {
+    Transaction.list(options, (err, response) => {
       if (response && response.success) {
         this.renderTransactions(response.data);
+      } else {
+        console.log(err);
       }
     });
   }
@@ -191,7 +199,7 @@ class TransactionsPage {
     const content = document.querySelector('.content');
     content.innerHTML = '';
     data.forEach((item) => {
-      content.appendChild(this.getTransactionHTML(item));
+      content.innerHTML += this.getTransactionHTML(item);
     });
   }
 }

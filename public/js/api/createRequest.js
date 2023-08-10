@@ -24,19 +24,16 @@ const createRequest = (options = {}) => {
         }
     }
 
+    xhr.open(method, url);
+    xhr.send(formData);
+
     try {
-        xhr.open(method, url);
-        if (formData) {
-            xhr.send(formData);
-        } else {
-            xhr.send();
-        }
         xhr.addEventListener('load', () => {
             if (xhr.DONE && xhr.status === 200) {
-                callback(null, xhr.response);
+                callback(xhr.response.error, xhr.response);
             }
         });
-    } catch (err) {
-        callback(err, xhr.response);
+    } catch (error) {
+        callback(error);
     }
 }
